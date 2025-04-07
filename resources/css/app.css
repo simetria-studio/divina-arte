@@ -1,0 +1,342 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .sidebar {
+        @apply h-screen fixed left-0 top-0 w-[280px] bg-gradient-to-b from-purple-900 to-indigo-900 shadow-lg z-40 transition-all duration-300 ease-in-out;
+    }
+
+    .sidebar-collapsed {
+        @apply -translate-x-[280px];
+    }
+
+    .menu-item {
+        @apply flex items-center px-6 py-3 text-white/90 transition-all duration-200 rounded-lg mx-3 my-1 hover:bg-white/10;
+    }
+
+    .menu-item.active {
+        @apply bg-white/20 text-white;
+    }
+
+    .main-content {
+        @apply ml-[280px] p-8 min-h-screen bg-gray-50 transition-all duration-300 w-full;
+    }
+
+    .user-dropdown {
+        @apply absolute right-0 bottom-full mb-2 w-48 py-2 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none;
+    }
+
+    .user-dropdown-item {
+        @apply block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-900 cursor-pointer;
+    }
+
+    .stat-card {
+        @apply bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300;
+    }
+
+    .btn-primary {
+        @apply bg-purple-900 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:bg-purple-800 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
+    }
+
+    .search-input {
+        @apply w-full bg-white border border-gray-200 rounded-lg pl-10 pr-4 py-2 transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/10;
+    }
+
+    .notification-badge {
+        @apply absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full text-xs min-w-[18px] h-[18px] flex items-center justify-center;
+    }
+
+    .custom-table {
+        @apply w-full border-separate border-spacing-0;
+    }
+
+    .custom-table th {
+        @apply bg-gray-50 px-6 py-3 font-semibold text-left text-gray-500 border-b border-gray-200;
+    }
+
+    .custom-table td {
+        @apply px-6 py-4 border-b border-gray-200;
+    }
+
+    .status-tag {
+        @apply px-3 py-1 rounded-full text-xs font-semibold;
+    }
+
+    .status-active {
+        @apply bg-green-100 text-green-800;
+    }
+
+    .status-pending {
+        @apply bg-yellow-100 text-yellow-800;
+    }
+
+    .status-inactive {
+        @apply bg-red-100 text-red-800;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .sidebar {
+            @apply -translate-x-[280px];
+        }
+        
+        .sidebar.show {
+            @apply translate-x-0;
+        }
+        
+        .main-content {
+            @apply ml-0;
+        }
+        
+        .overlay {
+            @apply hidden fixed inset-0 bg-black/50 z-30;
+        }
+        
+        .overlay.show {
+            @apply block;
+        }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        @apply w-2;
+    }
+
+    ::-webkit-scrollbar-track {
+        @apply bg-[#1a237e]/10 rounded-full;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-[#1a237e]/30 rounded-full hover:bg-[#1a237e]/50;
+    }
+
+    /* Layout Base */
+    .page-container {
+        @apply space-y-6 p-4 md:p-6;
+    }
+
+    /* Cards de Estatísticas */
+    .stats-grid {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8;
+    }
+
+    .stat-card {
+        @apply bg-white rounded-xl p-4 md:p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300;
+    }
+
+    .stat-icon {
+        @apply p-3 rounded-full;
+    }
+
+    .stat-icon.purple {
+        @apply bg-purple-50 text-purple-600;
+    }
+
+    .stat-icon.green {
+        @apply bg-green-50 text-green-600;
+    }
+
+    .stat-icon.blue {
+        @apply bg-blue-50 text-blue-600;
+    }
+
+    .stat-icon.pink {
+        @apply bg-pink-50 text-pink-600;
+    }
+
+    /* Tabela Principal */
+    .content-card {
+        @apply bg-white rounded-lg shadow-sm border border-gray-200;
+    }
+
+    .card-header {
+        @apply p-4 md:p-6 border-b border-gray-100;
+    }
+
+    .table-container {
+        @apply overflow-x-auto;
+    }
+
+    .custom-table {
+        @apply min-w-full divide-y divide-gray-200;
+    }
+
+    .custom-table thead {
+        @apply bg-gray-50;
+    }
+
+    .custom-table th {
+        @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+    }
+
+    .custom-table td {
+        @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900;
+    }
+
+    .custom-table tr {
+        @apply hover:bg-gray-50 transition-colors duration-150;
+    }
+
+    /* Formulários e Inputs */
+    .form-group {
+        @apply mb-6;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+    }
+
+    .input-success {
+        border-color: rgb(134, 239, 172);
+    }
+    
+    .input-success:focus {
+        border-color: rgb(34, 197, 94);
+        --tw-ring-color: rgb(34, 197, 94, 0.2);
+    }
+
+    .input-error {
+        border-color: rgb(252, 165, 165);
+    }
+    
+    .input-error:focus {
+        border-color: rgb(239, 68, 68);
+        --tw-ring-color: rgb(239, 68, 68, 0.2);
+    }
+
+    .form-input {
+        @apply mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+               focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 
+               transition-colors duration-200;
+    }
+
+    .form-error {
+        @apply mt-1 text-sm text-red-600;
+    }
+
+    /* Botões */
+    .btn-primary {
+        @apply inline-flex items-center px-4 py-2 border border-transparent 
+               rounded-lg shadow-sm text-sm font-medium text-white 
+               bg-purple-600 hover:bg-purple-700 
+               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 
+               transition-colors duration-200;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center px-4 py-2 border border-gray-300 
+               rounded-lg shadow-sm text-sm font-medium text-gray-700 
+               bg-white hover:bg-gray-50 
+               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 
+               transition-colors duration-200;
+    }
+
+    /* Status Tags */
+    .status-tag {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+
+    .status-active {
+        @apply bg-green-100 text-green-800;
+    }
+
+    .status-inactive {
+        @apply bg-red-100 text-red-800;
+    }
+
+    .status-pending {
+        @apply bg-yellow-100 text-yellow-800;
+    }
+
+    /* Avatares */
+    .avatar {
+        @apply h-10 w-10 rounded-full flex items-center justify-center text-white font-medium text-sm;
+    }
+
+    .avatar-gradient {
+        @apply bg-gradient-to-br from-purple-500 to-indigo-500;
+    }
+
+    /* Ações */
+    .action-buttons {
+        @apply flex items-center justify-end space-x-3;
+    }
+
+    .action-icon {
+        @apply w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors duration-200;
+    }
+
+    /* Filtros */
+    .filter-container {
+        @apply flex flex-wrap items-center gap-2;
+    }
+
+    .filter-select {
+        @apply rounded-lg border-gray-300 text-sm 
+               focus:ring-purple-500 focus:border-purple-500 
+               transition-colors duration-200;
+    }
+
+    /* Mensagens */
+    .alert-success {
+        @apply p-4 bg-green-50 border-l-4 border-green-500 flex items-center text-green-700;
+    }
+
+    /* Paginação Customizada */
+    .pagination {
+        @apply flex items-center justify-between px-4 py-3 sm:px-6;
+    }
+
+    /* Estado Vazio */
+    .empty-state {
+        @apply flex flex-col items-center justify-center py-12;
+    }
+
+    .empty-state-icon {
+        @apply w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4;
+    }
+
+    /* Responsividade */
+    @screen sm {
+        .responsive-grid {
+            @apply grid-cols-2;
+        }
+    }
+
+    @screen md {
+        .responsive-grid {
+            @apply grid-cols-3;
+        }
+    }
+
+    @screen lg {
+        .responsive-grid {
+            @apply grid-cols-4;
+        }
+    }
+
+    /* Checkbox customizado */
+    .custom-checkbox {
+        @apply rounded border-gray-300 text-purple-600 
+               focus:ring-purple-500 focus:ring-offset-0 
+               transition-colors duration-200;
+    }
+
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+}
+
+[x-cloak] {
+    display: none;
+}
