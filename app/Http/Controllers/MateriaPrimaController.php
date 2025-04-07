@@ -39,28 +39,16 @@ class MateriaPrimaController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
-        
+
+        \Illuminate\Support\Facades\Log::info($input);
+
         // Converte valores monetários
         $input['custo_total'] = $this->converterParaFloat($input['custo_total']);
-        
-        // Calcula outros valores
-        $input['custo_unitario'] = $input['custo_total'] / $input['quantidade'];
-        $input['utilizacao'] = 1 / $input['rendimento'];
-        $input['custo_utilizado'] = $input['custo_unitario'] * $input['utilizacao'];
-        $input['estoque_minimo'] = 0;
-        $input['estoque_maximo'] = $input['quantidade'] * 2;
-        
-        // Valida e cria
-        $validated = $request->merge($input)->validate([
-            'nome' => ['required', 'min:3'],
-            'custo_total' => ['required', 'numeric', 'min:0'],
-            'quantidade' => ['required', 'integer', 'min:1'],
-            'rendimento' => ['required', 'integer', 'min:1'],
-            'estoque_atual' => ['required', 'integer', 'min:0'],
-            'status' => ['required', 'in:ativo,inativo'],
-        ]);
+        $input['custo_unitario'] = $this->converterParaFloat($input['custo_unitario']);
+        $input['custo_utilizado'] = $this->converterParaFloat($input['custo_utilizado']);
+        $input['utilizacao'] = $this->converterParaFloat($input['utilizacao']);
 
-        $materiaPrima = MateriaPrima::create($validated);
+        $materiaPrima = MateriaPrima::create($input);
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -89,12 +77,13 @@ class MateriaPrimaController extends Controller
     {
         // Converte os valores monetários e porcentagem para o formato correto antes da validação
         $input = $request->all();
-        
+
         // Converte valores monetários
         $input['custo_total'] = $this->converterParaFloat($input['custo_total']);
         $input['custo_unitario'] = $this->converterParaFloat($input['custo_unitario']);
         $input['custo_utilizado'] = $this->converterParaFloat($input['custo_utilizado']);
-        
+        $input['utilizacao'] = $this->converterParaFloat($input['utilizacao']);
+
         // Converte porcentagem
         $input['rendimento'] = $this->converterParaFloat($input['rendimento']);
 
@@ -105,7 +94,7 @@ class MateriaPrimaController extends Controller
             'custo_unitario' => ['required', 'numeric', 'min:0'],
             'quantidade' => ['required', 'integer', 'min:0'],
             'rendimento' => ['required', 'numeric', 'min:0', 'max:100'],
-            'utilizacao' => ['required', 'integer', 'min:0'],
+            'utilizacao' => ['required', 'numeric', 'min:0'],
             'custo_utilizado' => ['required', 'numeric', 'min:0'],
             'estoque_minimo' => ['required', 'integer', 'min:0'],
             'estoque_maximo' => ['required', 'integer', 'min:0', 'gt:estoque_minimo'],
@@ -139,11 +128,11 @@ class MateriaPrimaController extends Controller
     {
         // Remove R$ e %
         $valor = str_replace(['R$', '%'], '', $valor);
-        
+
         // Remove pontos dos milhares e substitui vírgula por ponto
         return (float) str_replace(
-            ['.', ','], 
-            ['', '.'], 
+            ['.', ','],
+            ['', '.'],
             trim($valor)
         );
     }
