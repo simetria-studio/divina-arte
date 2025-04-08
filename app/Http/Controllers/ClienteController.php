@@ -22,12 +22,7 @@ class ClienteController extends Controller
     {
         $request->validate([
             'nome' => 'required|min:3',
-            'email' => 'required|email|unique:clientes',
-            'telefone' => 'required',
-            'endereco' => 'required',
-            'cidade' => 'required',
-            'estado' => 'required|size:2',
-            'cep' => 'required|size:9'
+            'telefone' => 'required'
         ]);
 
         Cliente::create($request->all());
@@ -50,12 +45,7 @@ class ClienteController extends Controller
     {
         $request->validate([
             'nome' => 'required|min:3',
-            'email' => 'required|email|unique:clientes,email,'.$cliente->id,
-            'telefone' => 'required',
-            'endereco' => 'required',
-            'cidade' => 'required',
-            'estado' => 'required|size:2',
-            'cep' => 'required|size:9'
+            'telefone' => 'required'
         ]);
 
         $cliente->update($request->all());

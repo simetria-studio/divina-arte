@@ -122,11 +122,11 @@ class PedidoController extends Controller
     private function converterParaFloat($valor)
     {
         if (is_numeric($valor)) return $valor;
-        
+
         $valor = str_replace(['R$', '%'], '', $valor);
         return (float) str_replace(
-            ['.', ','], 
-            ['', '.'], 
+            ['.', ','],
+            ['', '.'],
             trim($valor)
         );
     }
