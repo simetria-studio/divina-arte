@@ -122,11 +122,11 @@
                     <tbody>
                         @foreach($pedido->itens as $item)
                             <tr>
-                                <td class="font-medium text-gray-900">{{ $item->produto->nome }}</td>
-                                <td>{{ $item->quantidade }}</td>
-                                <td>{{ $item->formatted_custo_unitario }}</td>
-                                <td>{{ $item->formatted_desconto }}</td>
-                                <td>{{ $item->formatted_valor_total }}</td>
+                                <td class="font-medium text-gray-900">{{ $item->produto->nome ?? 'N/A' }}</td>
+                                <td>{{ $item->quantidade ?? 'N/A' }}</td>
+                                <td>{{ $item->formatted_custo_unitario ?? 'N/A' }}</td>
+                                <td>{{ $item->formatted_desconto ?? 'N/A' }}</td>
+                                <td>{{ $item->formatted_valor_total ?? 'N/A' }}</td>
                                 <td>
                                     @if($item->status === 'concluido')
                                         <span class="status-tag status-active">Concluído</span>
