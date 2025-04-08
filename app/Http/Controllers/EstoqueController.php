@@ -49,7 +49,7 @@ class EstoqueController extends Controller
 
         // Atualiza o estoque da matéria prima
         $materiaPrima = MateriaPrima::findOrFail($validated['materia_prima_id']);
-        
+
         if ($validated['tipo'] === 'entrada') {
             $materiaPrima->estoque_atual += $validated['quantidade'];
         } else {
@@ -73,7 +73,14 @@ class EstoqueController extends Controller
     {
         // Reverte a movimentação no estoque
         $materiaPrima = $estoque->materiaPrima;
-        
+
+        if (!$materiaPrima) {
+            $estoque->delete();
+            return redirect()
+                ->route('estoque.index')
+                ->with('success', 'Movimentação de estoque excluída com sucesso!');
+        }
+
         if ($estoque->tipo === 'entrada') {
             $materiaPrima->estoque_atual -= $estoque->quantidade;
         } else {
