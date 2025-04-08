@@ -5,28 +5,28 @@
 @section('subheader', 'Visualize e gerencie os detalhes do pedido')
 
 @section('content')
-<div class="max-w-7xl mx-auto space-y-6">
+<div class="mx-auto space-y-6 max-w-7xl">
     <!-- Cabeçalho do Pedido -->
     <div class="bg-white rounded-lg shadow-sm">
         <div class="p-6 border-b border-gray-100">
-            <div class="flex items-center justify-between">
+            <div class="flex justify-between items-center">
                 <div>
                     <h2 class="text-lg font-medium text-gray-900">
                         Pedido #{{ str_pad($pedido->id, 5, '0', STR_PAD_LEFT) }}
                     </h2>
                     <p class="mt-1 text-sm text-gray-500">
-                        Cliente: {{ $pedido->cliente->nome }}
+                        Cliente: {{ $pedido->cliente->nome ?? 'N/A' }}
                     </p>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex gap-3 items-center">
                     <a href="{{ route('pedidos.edit', $pedido) }}" class="btn-secondary">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                         Editar Pedido
                     </a>
                     <a href="{{ route('pedidos.index') }}" class="btn-secondary">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                         </svg>
                         Voltar
@@ -36,7 +36,7 @@
         </div>
 
         <!-- Informações do Pedido -->
-        <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Data de Entrega</label>
                 <p class="mt-1 text-lg text-gray-900">{{ $pedido->data_entrega->format('d/m/Y') }}</p>
@@ -82,13 +82,13 @@
     <!-- Lista de Itens -->
     <div class="bg-white rounded-lg shadow-sm">
         <div class="p-6 border-b border-gray-100">
-            <div class="flex items-center justify-between">
+            <div class="flex justify-between items-center">
                 <div>
                     <h2 class="text-lg font-medium text-gray-900">Itens do Pedido</h2>
                     <p class="mt-1 text-sm text-gray-500">{{ $pedido->itens->count() }} itens no pedido</p>
                 </div>
                 <a href="{{ route('pedidos.itens.create', $pedido) }}" class="btn-primary">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
                     Adicionar Item
@@ -98,7 +98,7 @@
 
         @if($pedido->itens->isEmpty())
             <div class="p-6 text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                <div class="inline-flex justify-center items-center mb-4 w-16 h-16 bg-gray-100 rounded-full">
                     <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
                     </svg>
@@ -137,8 +137,8 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="flex items-center gap-2">
-                                        <a href="{{ route('pedidos.itens.edit', [$pedido, $item]) }}" 
+                                    <div class="flex gap-2 items-center">
+                                        <a href="{{ route('pedidos.itens.edit', [$pedido, $item]) }}"
                                            class="btn-icon"
                                            title="Editar">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,12 +146,12 @@
                                             </svg>
                                         </a>
 
-                                        <form action="{{ route('pedidos.itens.destroy', [$pedido, $item]) }}" 
+                                        <form action="{{ route('pedidos.itens.destroy', [$pedido, $item]) }}"
                                               method="POST"
                                               onsubmit="return confirm('Tem certeza que deseja excluir este item?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" 
+                                            <button type="submit"
                                                     class="btn-icon hover:text-red-600"
                                                     title="Excluir">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,4 +169,4 @@
         @endif
     </div>
 </div>
-@endsection 
+@endsection
