@@ -36,21 +36,21 @@ class ProdutoController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
-        
+
         // Converte valores monetários
         $input['preco_custo'] = $this->converterParaFloat($input['preco_custo']);
         $input['preco_venda'] = $this->converterParaFloat($input['preco_venda']);
         $input['margem'] = $this->converterParaFloat($input['margem']);
-        
+
         // Valida os dados
         $validated = $request->merge($input)->validate([
             'nome' => ['required', 'min:3'],
-            'preco_custo' => ['required', 'numeric', 'min:0'],
-            'preco_venda' => ['required', 'numeric', 'min:0'],
+            'preco_custo' => ['required', 'numeric'],
+            'preco_venda' => ['required', 'numeric'],
             'margem' => ['required', 'numeric'],
             'materia_prima_id' => ['required', 'array'],
             'materia_prima_id.*' => ['exists:materia_primas,id'],
-            'horas_trabalho' => ['required', 'numeric', 'min:0'],
+            'horas_trabalho' => ['required', 'numeric'],
             'status' => ['required', 'in:ativo,inativo'],
         ]);
 
@@ -87,31 +87,41 @@ class ProdutoController extends Controller
     public function update(Request $request, Produto $produto)
     {
         $input = $request->all();
-        
+
         // Converte valores monetários antes da validação
-        $input['preco_custo'] = $this->converterParaFloat($input['preco_custo']);
         $input['preco_venda'] = $this->converterParaFloat($input['preco_venda']);
         $input['margem'] = $this->converterParaFloat($input['margem']);
 
-        // Primeiro valida os campos que não precisam de comparação
-        $request->validate([
+        // Valida todos os campos de uma vez
+        $validated = $request->merge($input)->validate([
             'nome' => ['required', 'string', 'max:255'],
-            'materia_prima_id' => ['required', 'exists:materia_primas,id'],
-            'horas_trabalho' => ['required', 'numeric', 'min:0'],
+            'materia_prima_id' => ['required', 'array'],
+            'materia_prima_id.*' => ['exists:materia_primas,id'],
+            'preco_venda' => ['required', 'numeric'],
+            'margem' => ['required', 'numeric'],
+            'horas_trabalho' => ['required', 'numeric'],
             'status' => ['required', 'in:ativo,inativo'],
         ]);
 
-        // Depois valida os campos monetários já convertidos
-        $validated = $request->merge($input)->validate([
-            'preco_custo' => ['required', 'numeric', 'min:0'],
-            'preco_venda' => ['required', 'numeric', 'min:0', 'gt:preco_custo'],
-            'margem' => ['required', 'numeric', 'min:0'],
-        ]);
+        // Calcula o preço de custo baseado nas matérias primas selecionadas
+        $precoCusto = 0;
+        $materiasPrimas = MateriaPrima::whereIn('id', $validated['materia_prima_id'])->get();
+        foreach ($materiasPrimas as $materiaPrima) {
+            $precoCusto += $materiaPrima->custo_utilizado;
+        }
 
-        // Combina todos os campos validados
-        $validated = array_merge($request->only(['nome', 'materia_prima_id', 'horas_trabalho', 'status']), $validated);
+        // Remove materia_prima_id do array validated pois será usado na relação
+        $materiasPrimasIds = $validated['materia_prima_id'];
+        unset($validated['materia_prima_id']);
 
+        // Adiciona o preço de custo calculado
+        $validated['preco_custo'] = $precoCusto;
+
+        // Atualiza o produto
         $produto->update($validated);
+
+        // Sincroniza as matérias primas
+        $produto->materiasPrimas()->sync($materiasPrimasIds);
 
         return redirect()
             ->route('produtos.index')
@@ -131,8 +141,8 @@ class ProdutoController extends Controller
     {
         $valor = str_replace(['R$', '%'], '', $valor);
         return (float) str_replace(
-            ['.', ','], 
-            ['', '.'], 
+            ['.', ','],
+            ['', '.'],
             trim($valor)
         );
     }

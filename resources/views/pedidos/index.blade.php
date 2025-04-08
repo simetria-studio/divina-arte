@@ -7,12 +7,12 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header/Search Bar -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex-1">
             <form class="flex gap-4 items-center">
                 <div class="flex-1 max-w-sm">
-                    <input type="text" 
-                           name="search" 
+                    <input type="text"
+                           name="search"
                            value="{{ request('search') }}"
                            class="form-input"
                            placeholder="Buscar pedido...">
@@ -36,7 +36,7 @@
         </div>
 
         <a href="{{ route('pedidos.create') }}" class="btn-primary">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
             Novo Pedido
@@ -46,7 +46,7 @@
     <!-- Success Message -->
     @if(session('success'))
         <div class="alert-success">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="mr-3 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             {{ session('success') }}
@@ -63,9 +63,9 @@
                     </svg>
                 </div>
                 <h3 class="text-lg font-medium text-gray-900">Nenhum pedido encontrado</h3>
-                <p class="text-gray-500 mb-4">Comece criando um novo pedido.</p>
+                <p class="mb-4 text-gray-500">Comece criando um novo pedido.</p>
                 <a href="{{ route('pedidos.create') }}" class="btn-primary">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
                     Novo Pedido
@@ -91,13 +91,13 @@
                                 <td class="font-medium text-gray-900">
                                     #{{ str_pad($pedido->id, 5, '0', STR_PAD_LEFT) }}
                                 </td>
-                                <td>{{ $pedido->cliente->nome }}</td>
+                                <td>{{ $pedido->cliente->nome ?? 'N/A' }}</td>
                                 <td>{{ $pedido->data_entrega->format('d/m/Y') }}</td>
-                                <td>{{ $pedido->formatted_valor_total }}</td>
+                                <td>{{ $pedido->formatted_valor_total ?? 'N/A' }}</td>
                                 <td>
                                     <div class="flex flex-col">
-                                        <span>{{ $pedido->formatted_lucro }}</span>
-                                        <span class="text-sm text-gray-500">{{ $pedido->formatted_lucro_percentual }}</span>
+                                        <span>{{ $pedido->formatted_lucro ?? 'N/A' }}</span>
+                                        <span class="text-sm text-gray-500">{{ $pedido->formatted_lucro_percentual ?? 'N/A' }}</span>
                                     </div>
                                 </td>
                                 <td>
@@ -112,8 +112,8 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="flex items-center gap-2">
-                                        <a href="{{ route('pedidos.show', $pedido) }}" 
+                                    <div class="flex gap-2 items-center">
+                                        <a href="{{ route('pedidos.show', $pedido) }}"
                                            class="btn-icon"
                                            title="Visualizar">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,7 +122,7 @@
                                             </svg>
                                         </a>
 
-                                        <a href="{{ route('pedidos.edit', $pedido) }}" 
+                                        <a href="{{ route('pedidos.edit', $pedido) }}"
                                            class="btn-icon"
                                            title="Editar">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,12 +130,12 @@
                                             </svg>
                                         </a>
 
-                                        <form action="{{ route('pedidos.destroy', $pedido) }}" 
+                                        <form action="{{ route('pedidos.destroy', $pedido) }}"
                                               method="POST"
                                               onsubmit="return confirm('Tem certeza que deseja excluir este pedido?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" 
+                                            <button type="submit"
                                                     class="btn-icon hover:text-red-600"
                                                     title="Excluir">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,4 +160,4 @@
         @endif
     </div>
 </div>
-@endsection 
+@endsection
