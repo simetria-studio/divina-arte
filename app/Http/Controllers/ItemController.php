@@ -20,26 +20,18 @@ class ItemController extends Controller
 
     public function store(Request $request, Pedido $pedido)
     {
+
         $input = $request->all();
-        
+
         // Converte valores monetários
         $input['custo_unitario'] = $this->converterParaFloat($input['custo_unitario']);
         $input['desconto'] = $this->converterParaFloat($input['desconto']);
         $input['valor_total'] = $this->converterParaFloat($input['valor_total']);
 
-        $validated = $request->merge($input)->validate([
-            'produto_id' => ['required', 'exists:produtos,id'],
-            'quantidade' => ['required', 'integer', 'min:1'],
-            'custo_unitario' => ['required', 'numeric', 'min:0'],
-            'desconto' => ['required', 'numeric', 'min:0'],
-            'valor_total' => ['required', 'numeric', 'min:0'],
-            'status' => ['required', 'in:pendente,concluido,cancelado'],
-        ]);
+        $input['pedido_id'] = $pedido->id;
 
-        $validated['pedido_id'] = $pedido->id;
-        
         // Cria o item
-        Item::create($validated);
+        Item::create($input);
 
         // Atualiza o valor total do pedido
         $pedido->valor_total = $pedido->itens()->sum('valor_total');
@@ -52,33 +44,26 @@ class ItemController extends Controller
 
     public function edit(Pedido $pedido, Item $item)
     {
+
+        $itens = Item::where('pedido_id', $pedido->id)->get();
         $produtos = Produto::where('status', 'ativo')
             ->orderBy('nome')
             ->get();
 
-        return view('itens.edit', compact('pedido', 'item', 'produtos'));
+        return view('itens.edit', compact('pedido', 'itens', 'produtos'));
     }
 
     public function update(Request $request, Pedido $pedido, Item $item)
     {
+        // dd($request->all());
         $input = $request->all();
-        
+
         // Converte valores monetários
         $input['custo_unitario'] = $this->converterParaFloat($input['custo_unitario']);
         $input['desconto'] = $this->converterParaFloat($input['desconto']);
         $input['valor_total'] = $this->converterParaFloat($input['valor_total']);
 
-        $validated = $request->merge($input)->validate([
-            'produto_id' => ['required', 'exists:produtos,id'],
-            'quantidade' => ['required', 'integer', 'min:1'],
-            'custo_unitario' => ['required', 'numeric', 'min:0'],
-            'desconto' => ['required', 'numeric', 'min:0'],
-            'valor_total' => ['required', 'numeric', 'min:0'],
-            'status' => ['required', 'in:pendente,concluido,cancelado'],
-        ]);
-
-        // Atualiza o item
-        $item->update($validated);
+        $item->update($input);
 
         // Atualiza o valor total do pedido
         $pedido->valor_total = $pedido->itens()->sum('valor_total');
@@ -104,11 +89,14 @@ class ItemController extends Controller
 
     private function converterParaFloat($valor)
     {
-        $valor = str_replace(['R$', '%'], '', $valor);
+        // Remove R$, % e qualquer tipo de espaço (incluindo \u{A0})
+        $valor = preg_replace('/[R$%\s]/u', '', $valor);
+
+        // Substitui vírgula por ponto e remove pontos de milhar
         return (float) str_replace(
-            ['.', ','], 
-            ['', '.'], 
+            ['.', ','],
+            ['', '.'],
             trim($valor)
         );
     }
-} 
+}

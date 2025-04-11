@@ -121,12 +121,13 @@
                     </thead>
                     <tbody>
                         @foreach($pedido->itens as $item)
+                       
                             <tr>
                                 <td class="font-medium text-gray-900">{{ $item->produto->nome ?? 'N/A' }}</td>
                                 <td>{{ $item->quantidade ?? 'N/A' }}</td>
                                 <td>{{ $item->formatted_custo_unitario ?? 'N/A' }}</td>
                                 <td>{{ $item->formatted_desconto ?? 'N/A' }}</td>
-                                <td>{{ $item->formatted_valor_total ?? 'N/A' }}</td>
+                                <td>{{ $item->valor_total ?? 'N/A' }}</td>
                                 <td>
                                     @if($item->status === 'concluido')
                                         <span class="status-tag status-active">Concluído</span>
@@ -136,9 +137,10 @@
                                         <span class="status-tag status-inactive">Cancelado</span>
                                     @endif
                                 </td>
+
                                 <td>
                                     <div class="flex gap-2 items-center">
-                                        <a href="{{ route('pedidos.itens.edit', [$pedido, $item]) }}"
+                                        <a href="{{ route('pedidos.itens.edit', ['pedido' => $pedido, 'item' => $item]) }}"
                                            class="btn-icon"
                                            title="Editar">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,7 +148,7 @@
                                             </svg>
                                         </a>
 
-                                        <form action="{{ route('pedidos.itens.destroy', [$pedido, $item]) }}"
+                                        <form action="{{ route('pedidos.itens.destroy', ['pedido' => $pedido, 'item' => $item]) }}"
                                               method="POST"
                                               onsubmit="return confirm('Tem certeza que deseja excluir este item?')">
                                             @csrf
